@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
 import android.widget.ImageButton
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
 import androidx.core.view.setMargins
 import androidx.recyclerview.widget.RecyclerView
 import models.BoardSize
@@ -31,23 +33,6 @@ class MemoryBoardAdapter(
         fun onCardClicked(position: Int)
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val imageButton = itemView.findViewById<ImageButton>(R.id.imageButton)
-        fun bind(position: Int) {
-            val id =
-                if (cards[position].isFaceUp)
-                    cards[position].identifier
-                else
-                    R.drawable.ic_launcher_background
-
-            imageButton.setImageResource(id)
-            imageButton.setOnClickListener {
-                Log.i(TAG, "Clicked on position $position")
-                cardClickListener.onCardClicked(position)
-            }
-        }
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val width = parent.width / boardSize.width
         val height = parent.height / boardSize.height
@@ -67,5 +52,26 @@ class MemoryBoardAdapter(
         holder.bind(position)
     }
 
+
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val imageButton = itemView.findViewById<ImageButton>(R.id.imageButton)
+        fun bind(position: Int) {
+            val card = cards[position]
+            val id =
+                if (card.isFaceUp)
+                    card.identifier
+                else
+                    R.drawable.ic_launcher_background
+
+            imageButton.setImageResource(id)
+            imageButton.alpha = if(card.isMatched) 0.4f else 1f
+            val colorStateList = if(card.isMatched) ContextCompat.getColorStateList(context,R.color.color_gray) else null
+            ViewCompat.setBackgroundTintList(imageButton,colorStateList)
+            imageButton.setOnClickListener {
+                Log.i(TAG, "Clicked on position $position")
+                cardClickListener.onCardClicked(position)
+            }
+        }
+    }
 
 }

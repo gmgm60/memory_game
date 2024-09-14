@@ -35,6 +35,7 @@ class MemoryGame(boardSize: BoardSize) {
             if (cards[firstFlippedIndex!!].identifier == cards[secondFlippedIndex!!].identifier) {
                 cards[firstFlippedIndex!!].isMatched = true
                 cards[secondFlippedIndex!!].isMatched = true
+                ids.add(firstFlippedIndex!!)
                 firstFlippedIndex = null
                 secondFlippedIndex = null
                 numPairsFound++
