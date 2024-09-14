@@ -3,7 +3,7 @@ package models
 import android.util.Log
 import utils.DEFAULT_ICONS
 
-class MemoryGame(boardSize: BoardSize) {
+class MemoryGame(private val boardSize: BoardSize) {
     companion object {
         private const val TAG = "MemoryGame"
     }
@@ -13,7 +13,13 @@ class MemoryGame(boardSize: BoardSize) {
         .map { id -> MemoryCard(id) }
 
     var numPairsFound = 0
+        private set
     var numMoves = 0
+        private set
+
+    val isWin
+        get() = boardSize.pairsCount == numPairsFound
+
     private var firstFlippedIndex: Int? = null
     private var secondFlippedIndex: Int? = null
 
@@ -32,6 +38,7 @@ class MemoryGame(boardSize: BoardSize) {
             firstFlippedIndex = position
         } else if (secondFlippedIndex == null) {
             secondFlippedIndex = position
+            numMoves++
             if (cards[firstFlippedIndex!!].identifier == cards[secondFlippedIndex!!].identifier) {
                 cards[firstFlippedIndex!!].isMatched = true
                 cards[secondFlippedIndex!!].isMatched = true
@@ -48,7 +55,13 @@ class MemoryGame(boardSize: BoardSize) {
             firstFlippedIndex = position
             secondFlippedIndex = null
         }
-        numMoves++
+
         return ids
+    }
+
+    fun canFlip(position: Int): String? {
+        if (isWin) return "Already Win The Game !!!"
+        else if (cards[position].isFaceUp) return "Already FaceUp !!!"
+        return null
     }
 }
