@@ -1,7 +1,9 @@
 package com.gmgm60.memorygame
 
 import android.animation.ArgbEvaluator
+import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
@@ -26,6 +28,7 @@ import models.MemoryGame
 class MainActivity : AppCompatActivity() {
 
 
+    private var landscape: Boolean = false;
     private lateinit var clRoot: ConstraintLayout;
     private lateinit var rvBoard: RecyclerView;
     private lateinit var tvNumMoves: TextView;
@@ -109,6 +112,13 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        landscape = newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE
+        setBoardView()
+        super.onConfigurationChanged(newConfig)
+
+    }
+
     private fun showAlertDialog(title: String, view: View?, onClickListener: OnClickListener) {
         AlertDialog.Builder(this)
             .setTitle(title)
@@ -136,12 +146,19 @@ class MainActivity : AppCompatActivity() {
                 append("${boardSize.pairsCount}".padStart(2, '0'))
             }
 
-        rvBoard.layoutManager = GridLayoutManager(this, boardSize.width)
         rvBoard.setHasFixedSize(true)
+
+        setBoardView()
+    }
+
+    private fun setBoardView() {
+        rvBoard.layoutManager =
+            GridLayoutManager(this, if (landscape) boardSize.height else boardSize.width)
         adapter = MemoryBoardAdapter(
             this,
             boardSize,
             memoryGame.cards,
+            landscape,
             object : MemoryBoardAdapter.CardClickListener {
                 override fun onCardClicked(position: Int) {
                     onClick(position)

@@ -20,12 +20,13 @@ class MemoryBoardAdapter(
     private val context: Context,
     private val boardSize: BoardSize,
     private val cards: List<MemoryCard>,
+    private val landscape: Boolean,
     private val cardClickListener: CardClickListener
 ) :
     RecyclerView.Adapter<MemoryBoardAdapter.ViewHolder>() {
 
     companion object {
-        private const val MARGIN_SIZE = 10
+        private const val MARGIN_SIZE = 2
         private const val TAG = "MemoryBoardAdapter"
     }
 
@@ -34,8 +35,10 @@ class MemoryBoardAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val width = parent.width / boardSize.width
-        val height = parent.height / boardSize.height
+        val boardSizeWidth = if (landscape)boardSize.height  else boardSize.width
+        val boardSizeHeight = if (landscape) boardSize.width else boardSize.height
+        val width = parent.width /boardSizeWidth
+        val height = parent.height / boardSizeHeight
         val cardLength = min(width, height) - (MARGIN_SIZE * 2)
         val view = LayoutInflater.from(context).inflate(R.layout.memory_card, parent, false)
         val params = view.findViewById<CardView>(R.id.cardView).layoutParams as MarginLayoutParams
@@ -64,9 +67,12 @@ class MemoryBoardAdapter(
                     R.drawable.ic_launcher_background
 
             imageButton.setImageResource(id)
-            imageButton.alpha = if(card.isMatched) 0.4f else 1f
-            val colorStateList = if(card.isMatched) ContextCompat.getColorStateList(context,R.color.color_gray) else null
-            ViewCompat.setBackgroundTintList(imageButton,colorStateList)
+            imageButton.alpha = if (card.isMatched) 0.4f else 1f
+            val colorStateList = if (card.isMatched) ContextCompat.getColorStateList(
+                context,
+                R.color.color_gray
+            ) else null
+            ViewCompat.setBackgroundTintList(imageButton, colorStateList)
             imageButton.setOnClickListener {
                 Log.i(TAG, "Clicked on position $position")
                 cardClickListener.onCardClicked(position)
