@@ -15,6 +15,7 @@ class ImagePickerAdapter(
     private val selectedImages: List<Uri>,
     private val boardSize: BoardSize,
     private val landscape: Boolean,
+    private val onClick: View.OnClickListener,
 ) : RecyclerView.Adapter<ImagePickerAdapter.ViewHolder>() {
     companion object {
         private const val MARGIN_SIZE = 8
@@ -50,9 +51,7 @@ class ImagePickerAdapter(
         private val ivCustomImage = itemView.findViewById<ImageView>(R.id.ivCustomImage)
 
         fun bind() {
-            ivCustomImage.setOnClickListener({
-                //todo:
-            })
+            ivCustomImage.setOnClickListener(onClick)
         }
 
         fun bind(uri: Uri) {
