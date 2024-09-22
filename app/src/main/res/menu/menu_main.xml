@@ -11,4 +11,8 @@
         android:id="@+id/mi_new_size"
         android:icon="@android:drawable/ic_menu_today"
         android:title="Choose New Size" />
+    <item
+        android:id="@+id/mi_create"
+        android:title="Create custom Game"
+        app:showAsAction="never" />
 </menu>

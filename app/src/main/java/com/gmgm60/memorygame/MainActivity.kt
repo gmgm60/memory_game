@@ -1,7 +1,9 @@
 package com.gmgm60.memorygame
 
 import android.animation.ArgbEvaluator
+import android.content.Intent
 import android.content.res.Configuration
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,6 +14,7 @@ import android.view.View.OnClickListener
 import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContract
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -23,17 +26,23 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import models.BoardSize
 import models.MemoryGame
+import utils.EXTRA_BOARD_SIZE
 
 
 class MainActivity : AppCompatActivity() {
 
+    companion object {
+        private const val TAG = "MainActivity"
+        private const val CREATE_REQUEST_CODE = 3011
+
+    }
 
     private var landscape: Boolean = false;
     private lateinit var clRoot: ConstraintLayout;
     private lateinit var rvBoard: RecyclerView;
     private lateinit var tvNumMoves: TextView;
     private lateinit var tvNumPairs: TextView;
-    private var boardSize = BoardSize.MEDIUM
+    private var boardSize = BoardSize.EASY
 
     private lateinit var memoryGame: MemoryGame
     private lateinit var adapter: MemoryBoardAdapter
@@ -52,7 +61,9 @@ class MainActivity : AppCompatActivity() {
 
 
         setupBoard()
-
+        val intent = Intent(this, CreateActivity::class.java)
+        intent.putExtra(EXTRA_BOARD_SIZE, boardSize)
+        startActivityForResult(intent, CREATE_REQUEST_CODE)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.clRoot)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -83,6 +94,11 @@ class MainActivity : AppCompatActivity() {
                 val boardSizeView =
                     LayoutInflater.from(this).inflate(R.layout.dialog_board_size, null)
                 val radioGroup = boardSizeView.findViewById<RadioGroup>(R.id.radioGroup)
+                when (boardSize) {
+                    BoardSize.EASY -> radioGroup.check(R.id.rbEasy)
+                    BoardSize.MEDIUM -> radioGroup.check(R.id.rbMedium)
+                    BoardSize.HARD -> radioGroup.check(R.id.rbHard)
+                }
                 showAlertDialog(
                     "Are you Sure ?",
                     boardSizeView,
@@ -105,6 +121,29 @@ class MainActivity : AppCompatActivity() {
                         setupBoard()
 
                     }
+                }
+                return true
+            }
+
+            R.id.mi_create -> {
+                val boardSizeView =
+                    LayoutInflater.from(this).inflate(R.layout.dialog_board_size, null)
+                val radioGroup = boardSizeView.findViewById<RadioGroup>(R.id.radioGroup)
+                showAlertDialog(
+                    "Set New Size?",
+                    boardSizeView,
+                ) {
+                    val boardSize = when (radioGroup.checkedRadioButtonId) {
+                        R.id.rbEasy -> BoardSize.EASY
+                        R.id.rbMedium -> BoardSize.MEDIUM
+                        else -> BoardSize.HARD
+                    }
+                    val intent = Intent(this, CreateActivity::class.java)
+                    intent.putExtra(EXTRA_BOARD_SIZE, boardSize)
+                    startActivityForResult(intent, CREATE_REQUEST_CODE)
+                    setupBoard()
+
+
                 }
                 return true
             }
