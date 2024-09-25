@@ -67,9 +67,11 @@ class CreateActivity : AppCompatActivity() {
             insets
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            boardSize = intent.getSerializableExtra(EXTRA_BOARD_SIZE, BoardSize::class.java)!!
+        boardSize = intent.getStringExtra(EXTRA_BOARD_SIZE)!!.let {
+            BoardSize.valueOf(it)
         }
+
+
         numRequiredImages = boardSize.pairsCount
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "numRequiredImages: (0 / $numRequiredImages)"
@@ -131,11 +133,11 @@ class CreateActivity : AppCompatActivity() {
                 val remaining = numRequiredImages - selectedImages.size
                 for (i in 0 until min(remaining, clipData.itemCount)) {
                     selectedImages.add(clipData.getItemAt(i).uri)
-                    adapter.notifyItemChanged(selectedImages.size-1)
+                    adapter.notifyItemChanged(selectedImages.size - 1)
                 }
             } else if (selectedUri != null) {
                 selectedImages.add(selectedUri)
-                adapter.notifyItemChanged(selectedImages.size-1)
+                adapter.notifyItemChanged(selectedImages.size - 1)
             }
         }
         super.onActivityResult(requestCode, resultCode, data)

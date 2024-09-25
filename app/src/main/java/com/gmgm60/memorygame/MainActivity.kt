@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity() {
 
         setupBoard()
         val intent = Intent(this, CreateActivity::class.java)
-        intent.putExtra(EXTRA_BOARD_SIZE, boardSize)
+        intent.putExtra(EXTRA_BOARD_SIZE, boardSize.name)
         startActivityForResult(intent, CREATE_REQUEST_CODE)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.clRoot)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -139,7 +139,7 @@ class MainActivity : AppCompatActivity() {
                         else -> BoardSize.HARD
                     }
                     val intent = Intent(this, CreateActivity::class.java)
-                    intent.putExtra(EXTRA_BOARD_SIZE, boardSize)
+                    intent.putExtra(EXTRA_BOARD_SIZE, boardSize.name)
                     startActivityForResult(intent, CREATE_REQUEST_CODE)
                     setupBoard()
 
