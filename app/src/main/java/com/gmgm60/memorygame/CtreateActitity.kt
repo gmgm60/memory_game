@@ -2,10 +2,12 @@ package com.gmgm60.memorygame
 
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.text.Editable
+import android.text.InputFilter
+import android.text.TextWatcher
 import android.util.Log
 import android.view.MenuItem
 import android.widget.Button
@@ -38,6 +40,8 @@ class CreateActivity : AppCompatActivity() {
         private const val TAG = "CreateActivity"
         private const val PICK_REQUEST_CODE = 1988
         private const val READ_PHOTO_REQUEST_CODE = 8819
+        private const val MIN_GAME_NAME_LENGTH = 3
+        private const val MAX_GAME_NAME_LENGTH = 14
         private val READ_PHOTO_PERMISSION =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                 android.Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED
@@ -59,6 +63,16 @@ class CreateActivity : AppCompatActivity() {
 
         rvImagePicker = findViewById(R.id.rvImagePicker)
         etGameName = findViewById(R.id.etGameName)
+        etGameName.filters = arrayOf(InputFilter.LengthFilter(MAX_GAME_NAME_LENGTH))
+        etGameName.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                btSave.isEnabled = shouldEnableSaveButton()
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
         btSave = findViewById(R.id.btSave)
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -100,16 +114,13 @@ class CreateActivity : AppCompatActivity() {
     }
 
     override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
+        requestCode: Int, permissions: Array<out String>, grantResults: IntArray
     ) {
         isPermissionGranted(requestCode, READ_PHOTO_REQUEST_CODE, grantResults) { isGranted ->
             if (isGranted) {
                 lunchIntentForPhotos()
             } else {
-                Toast.makeText(this, "Permission Not Granted", Toast.LENGTH_LONG)
-                    .show()
+                Toast.makeText(this, "Permission Not Granted", Toast.LENGTH_LONG).show()
             }
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -139,8 +150,16 @@ class CreateActivity : AppCompatActivity() {
                 selectedImages.add(selectedUri)
                 adapter.notifyItemChanged(selectedImages.size - 1)
             }
+            btSave.isEnabled = shouldEnableSaveButton()
             supportActionBar?.title = "Chose Pics: (${selectedImages.size} / $numRequiredImages)"
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
+
+    private fun shouldEnableSaveButton(): Boolean {
+        val validImages = selectedImages.size == numRequiredImages
+        val validName = etGameName.text.trim().length > MIN_GAME_NAME_LENGTH
+        return validName && validImages;
+    }
+
 }
