@@ -74,7 +74,7 @@ class CreateActivity : AppCompatActivity() {
 
         numRequiredImages = boardSize.pairsCount
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "numRequiredImages: (0 / $numRequiredImages)"
+        supportActionBar?.title = "Chose Pics: (${selectedImages.size} / $numRequiredImages)"
 
 
 
@@ -139,6 +139,7 @@ class CreateActivity : AppCompatActivity() {
                 selectedImages.add(selectedUri)
                 adapter.notifyItemChanged(selectedImages.size - 1)
             }
+            supportActionBar?.title = "Chose Pics: (${selectedImages.size} / $numRequiredImages)"
         }
         super.onActivityResult(requestCode, resultCode, data)
     }

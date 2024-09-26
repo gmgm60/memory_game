@@ -13,5 +13,6 @@
         android:layout_height="100dp"
         android:layout_margin="8dp"
         android:background="#888888"
+        android:scaleType="centerCrop"
         tools:srcCompat="@tools:sample/backgrounds/scenic" />
 </LinearLayout>
