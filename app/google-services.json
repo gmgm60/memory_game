@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1083826350926",
+    "project_id": "egypt-memory-game",
+    "storage_bucket": "egypt-memory-game.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1083826350926:android:fdfe24acc2430142b44c1f",
+        "android_client_info": {
+          "package_name": "com.gmgm60.memorygame"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAoRAtI67Us1v0vN7rAgXE2xaGEVUd5KCQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

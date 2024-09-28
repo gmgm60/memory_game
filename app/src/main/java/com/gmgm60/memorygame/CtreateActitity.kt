@@ -19,6 +19,8 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import models.BoardSize
 import utils.EXTRA_BOARD_SIZE
 import utils.isPermissionGranted
@@ -74,6 +76,12 @@ class CreateActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
         btSave = findViewById(R.id.btSave)
+
+        btSave.setOnClickListener {
+            val storage = Firebase.storage
+            Log.i(TAG, storage.app.name)
+            Log.i(TAG, storage.getReference("cards").name)
+        }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -159,7 +167,7 @@ class CreateActivity : AppCompatActivity() {
     private fun shouldEnableSaveButton(): Boolean {
         val validImages = selectedImages.size == numRequiredImages
         val validName = etGameName.text.trim().length > MIN_GAME_NAME_LENGTH
-        return validName && validImages;
+        return validName && validImages
     }
 
 }
