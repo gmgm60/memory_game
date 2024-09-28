@@ -2,9 +2,12 @@ package com.gmgm60.memorygame
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
@@ -22,9 +25,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import models.BoardSize
+import utils.BitmapScaler
 import utils.EXTRA_BOARD_SIZE
 import utils.isPermissionGranted
 import utils.requestPermission
+import java.io.ByteArrayOutputStream
 import kotlin.math.min
 
 class CreateActivity : AppCompatActivity() {
@@ -168,6 +173,26 @@ class CreateActivity : AppCompatActivity() {
         val validImages = selectedImages.size == numRequiredImages
         val validName = etGameName.text.trim().length > MIN_GAME_NAME_LENGTH
         return validName && validImages
+    }
+
+    private fun saveDataToFirebase() {
+        Log.i(TAG, "saveDataToFirebase")
+        for ((index, photoUri) in selectedImages.withIndex()) {
+            val imageByteArray = getImageByteArray(photoUri)
+        }
+    }
+
+    private fun getImageByteArray(photoUri: Uri): ByteArray {
+        val originalBitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            val source = ImageDecoder.createSource(contentResolver, photoUri)
+            ImageDecoder.decodeBitmap(source)
+        } else {
+            MediaStore.Images.Media.getBitmap(contentResolver, photoUri)
+        }
+        val sizedBitmap = BitmapScaler.scaleToFitHeight(originalBitmap, 250)
+        val bytOutputStream = ByteArrayOutputStream()
+        sizedBitmap.compress(Bitmap.CompressFormat.JPEG, 60, bytOutputStream)
+        return bytOutputStream.toByteArray()
     }
 
 }

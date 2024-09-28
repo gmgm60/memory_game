@@ -4,10 +4,10 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-09-25T17:02:25.148492Z">
+        <DropdownSelection timestamp="2024-09-28T16:59:15.791666500Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="PhysicalDevice" identifier="serial=fedd2893" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=E:\android\.android\avd\kortoba_API_33.avd" />
             </handle>
           </Target>
         </DropdownSelection>
